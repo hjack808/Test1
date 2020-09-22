@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hjack.ssm.mapper.EmployeeMapper">
+
+    <!--public List<Employee> getAllEmps();-->
+    <select id="getAllEmps" resultMap="myEmpAndDept">
+        select e.id eid,e.last_name,e.email,e.gender,d.id did,d.dept_name
+        from tbl_employee e, tbl_dept d
+        where e.d_id = d.id
+        order by e.id desc
+    </select>
+    <resultMap id="myEmpAndDept" type="com.hjack.ssm.beans.Employee">
+        <id column="eid" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <association property="dept" javaType="com.hjack.ssm.beans.Department">
+            <id column="did"  property="id"/>
+            <result column="dept_name" property="departmentName"/>
+        </association>
+
+    </resultMap>
+
+    <!--public Employee getEmployeById(Integer id);-->
+    <!--<select id="getEmployeById" resultType="com.hjack.ssm.beans.Employee">-->
+    <select id="getEmployeById" resultMap="myEmpAndDept">
+        select e.id eid,e.last_name,e.email,e.gender,d.id did,d.dept_name
+        from tbl_employee e, tbl_dept d
+        where e.d_id = d.id and e.id = #{id}
+    </select>
+
+    <!--public void addEmployee(Employee employee);-->
+    <insert id="addEmployee" parameterType="com.hjack.ssm.beans.Employee">
+        insert into tbl_employee (last_name,email,gender,d_id) values (#{lastName},#{email},#{gender},#{dept.id})
+    </insert>
+
+    <!-- public void updateEmployee(Employee employee);-->
+    <update id="updateEmployee">
+        update tbl_employee set last_name = #{lastName},email = #{email}, gender = #{gender}, d_id = #{dept.id} where id = #{id}
+    </update>
+
+    <!--public void deleteEmployeeById(Integer id);-->
+    <delete id="deleteEmployeeById">
+        delete from tbl_employee where id = #{id}
+    </delete>
+
+    <!--public List<Employee> getEmps();-->
+    <select id="getEmps"   resultType="com.hjack.ssm.beans.Employee">
+        select id,lastname,email,gender from tbl_employee
+    </select>
+
+    <!--public Map<String , Object> getEmployeeByIdReturnMap(Integer id);-->
+    <select id="getEmployeeByIdReturnMap" resultType="hashmap">
+        select id,lastname,email,gender from tbl_employee where id = #{id}
+    </select>
+
+    <!--public Map<Integer,Employee> getEmpsReturnMap();-->
+    <select id="getEmpsReturnMap" resultType="com.hjack.ssm.beans.Employee">
+        select id,lastname,email,gender from tbl_employee
+    </select>
+</mapper>
